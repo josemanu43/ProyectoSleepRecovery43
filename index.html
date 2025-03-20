@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Recovery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <i class='bx bx-moon'></i>
+            <h1>Sleep Recovery</h1>
+            <nav class="navegacion">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="index1.html">Registrarse</a></li>
+                </ul>
+            </nav>
+        </header>
+    
+        <section class="calcular">
+            <h2>Seleccione su rango de edad</h2>
+            <form>
+                <div class="botones-rangos-edad">
+                    <button type="button" value="0-3">Recién nacidos (0-3 meses)</button>
+                    <button type="button" value="4-11">Bebés (4-11 meses)</button>
+                    <button type="button" value="1-2">Niños pequeños (1-2 años)</button>
+                    <button type="button" value="3-5">Preescolares (3-5 años)</button>
+                    <button type="button" value="6-13">Niños en edad escolar (6-13 años)</button>
+                    <button type="button" value="14-17">Adolescentes (14-17 años)</button>
+                    <button type="button" value="18-25">Adultos jóvenes (18-25 años)</button>
+                    <button type="button" value="26-64">Adultos (26-64 años)</button>
+                    <button type="button" value="65+">Adultos mayores (65+ años)</button>
+                </div>
+                <br><br>
+                <div class="botones-opciones">
+                    <button type="button" value="dormir">Deseo dormir a las...</button>
+                    <button type="button" value="despertar">Deseo despertar a las...</button>
+                </div>
+                <br><br>
+                <div class="selectores-hora">
+                    <select id="hora" name="hora">
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <select id="minutos" name="minutos">
+                        <option value="00">00</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="45">45</option>
+                    </select>
+                    <select id="periodo" name="periodo">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
+                <br><br>
+                <button type="submit">Calcular</button>
+            </form>
+        </section>
+    
+        <footer>
+            <p>&copy; 2024 Sleep Recovery. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
