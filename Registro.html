@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleep Recovery - Registro e Inicio de Sesión</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -16,8 +16,8 @@
             <h1>Sleep Recovery</h1>
             <nav class="navegacion">
                 <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html">Sobre Nosotros</a></li>
                     <li><a href="#">Contacto</a></li>
                 </ul>
             </nav>
@@ -56,6 +56,7 @@
                 <label for="edad-registrarse">Rango de Edad:</label>
                 <select id="edad-registrarse" name="edad" required>
                     <option value="">Selecciona tu rango de edad</option>
+                    <option value="18-25">0-18</option>
                     <option value="18-25">18-25</option>
                     <option value="26-35">26-35</option>
                     <option value="36-45">36-45</option>
@@ -66,10 +67,9 @@
                 <label for="actividad-fisica">Nivel de Actividad Física:</label>
                 <select id="actividad-fisica" name="actividad" required>
                     <option value="">Selecciona tu nivel de actividad</option>
-                    <option value="sedentario">Sedentario</option>
-                    <option value="ligero">Ligero</option>
+                    <option value="bajo">Bajo</option>
                     <option value="moderado">Moderado</option>
-                    <option value="intenso">Intenso</option>
+                    <option value="alto">Alto</option>
                 </select>
 
                 <label for="contrasena-registrarse">Contraseña:</label>
