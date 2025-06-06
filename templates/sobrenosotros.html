@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleep Recovery</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -15,10 +15,10 @@
             <i class='bx bx-moon luna-brillante'></i>
             <h1>Sleep Recovery</h1>
             <nav class="navegacion">
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="sobrenosotros.html">Sobre Nosotros</a></li>
-                    <li><a href="Registro.html">Registrarse</a></li>
+               <ul>
+                    <li><a href="{% url 'index' %}">Inicio</a></li>
+                    <li><a href="{% url 'sobrenosotros' %}">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
                 </ul>
             </nav>
         </header>
@@ -79,7 +79,7 @@
                 <li>Utilice una cama cómoda y mantenga el dormitorio oscuro y tranquilo.</li>
             </ul>
         </section>
-
+        <script src="{% static 'js/validarform.js' %}"></script>
         <footer>
             <p>&copy; 2024 Sleep Recovery. Todos los derechos reservados.</p>
         </footer>

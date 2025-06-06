@@ -16,9 +16,9 @@
             <h1>Sleep Recovery</h1>
             <nav class="navegacion">
                 <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="index.html">Sobre Nosotros</a></li>
-                    <li><a href="sobrenosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'index' %}">Inicio</a></li>
+                    <li><a href="{% url 'sobrenosotros' %}">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
                 </ul>
             </nav>
         </header>
@@ -85,7 +85,7 @@
             <p>&copy; 2024 Sleep Recovery. Todos los derechos reservados.</p>
         </footer>
     </div>
-    <script src="validarform.js"></script>
+    <script src="{% static 'js/validarform.js' %}"></script>
 </body>
 
 </html>
