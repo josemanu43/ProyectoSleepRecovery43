@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron">
+        <h1 class="display-4">¡Bienvenido a Sleep Recovery, {{ user.username }}!</h1>
+        <p class="lead">Esta es tu página principal. Aquí podrás ver y analizar tus patrones de sueño.</p>
+        <hr class="my-4">
+        <p>Aún no tenemos datos para mostrar, pero pronto agregaremos las funcionalidades de seguimiento y análisis.</p>
+        <a class="btn btn-danger btn-lg" href="{% url 'logout' %}" role="button">Cerrar Sesión</a>
+    </div>
+</div>
+{% endblock %}
