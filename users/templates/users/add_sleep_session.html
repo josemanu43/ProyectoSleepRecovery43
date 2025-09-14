@@ -1,0 +1,27 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center bg-primary text-white">
+                    <h2>Registrar Sesión de Sueño</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Sesión</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Volver al Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from pathlib import Path
-import os # <-- ¡La importación debe estar aquí, al principio!
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users', # <-- Tu aplicación 'users' está aquí
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -52,14 +52,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'sleep_recovery.urls'
 
-# sleep_recovery/settings.py
-
-# ...
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'users/templates/users')], # ¡Aquí está el cambio!
+        'DIRS': [os.path.join(BASE_DIR, 'users/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,8 +67,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# ...
 
 WSGI_APPLICATION = 'sleep_recovery.wsgi.application'
 

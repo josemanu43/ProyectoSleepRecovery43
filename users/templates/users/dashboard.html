@@ -1,13 +1,114 @@
-{% extends 'base.html' %}
+{% extends 'users/base.html' %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="jumbotron">
+    <div class="jumbotron text-center">
         <h1 class="display-4">¡Bienvenido a Sleep Recovery, {{ user.username }}!</h1>
         <p class="lead">Esta es tu página principal. Aquí podrás ver y analizar tus patrones de sueño.</p>
-        <hr class="my-4">
-        <p>Aún no tenemos datos para mostrar, pero pronto agregaremos las funcionalidades de seguimiento y análisis.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'add_sleep_session' %}" role="button">Registrar nueva sesión de sueño</a>
         <a class="btn btn-danger btn-lg" href="{% url 'logout' %}" role="button">Cerrar Sesión</a>
     </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Duración promedio del sueño</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ average_duration|floatformat:0 }} min</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Calidad más frecuente</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ most_frequent_quality }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Sesiones registradas</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_sessions }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="my-4">
+
+    {% if sleep_sessions %}
+        <h2 class="text-center mt-5">Tu Historial de Sueño</h2>
+        
+        {% if chart_url %}
+        <div class="row mt-4 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Gráfico de Duración del Sueño</h4>
+                        <img src="data:image/png;base64,{{ chart_url }}" class="img-fluid" alt="Gráfico de duración del sueño">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <table class="table table-striped table-bordered mt-4">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th scope="col">Hora de inicio</th>
+                    <th scope="col">Hora de fin</th>
+                    <th scope="col">Duración (min)</th>
+                    <th scope="col">Calidad</th>
+                    <th scope="col">Interrupciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sleep_sessions %}
+                <tr>
+                    <td>{{ session.start_time }}</td>
+                    <td>{{ session.end_time }}</td>
+                    <td>{{ session.duration|floatformat:0 }}</td>
+                    <td>{{ session.quality }}</td>
+                    <td>{{ session.sleep_interruptions }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="table table-striped table-bordered mt-4">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th scope="col">Hora de inicio</th>
+                <th scope="col">Hora de fin</th>
+                <th scope="col">Duración (min)</th>
+                <th scope="col">Calidad</th>
+                <th scope="col">Interrupciones</th>
+                <th scope="col">Acciones</th> </tr>
+        </thead>
+        <tbody>
+            {% for session in sleep_sessions %}
+            <tr>
+                <td>{{ session.start_time }}</td>
+                <td>{{ session.end_time }}</td>
+                <td>{{ session.duration|floatformat:0 }}</td>
+                <td>{{ session.quality }}</td>
+                <td>{{ session.sleep_interruptions }}</td>
+                <td>
+                    <a href="{% url 'edit_sleep_session' session.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'delete_sleep_session' session.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center mt-5">Aún no has registrado ninguna sesión de sueño. ¡Comienza ahora!</p>
+    {% endif %}
+
+
 </div>
 {% endblock %}

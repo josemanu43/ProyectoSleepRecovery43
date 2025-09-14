@@ -18,6 +18,8 @@ class SleepQualityOption(models.Model):
     def __str__(self):
         return self.quality_label
 
+# users/models.py
+
 class SleepSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
@@ -30,7 +32,6 @@ class SleepSession(models.Model):
 
     def __str__(self):
         return f'Sleep session for {self.user.username} on {self.start_time.date()}'
-
 class Recommendation(models.Model):
     RECOMMENDATION_TYPES = [
         ('consistencia', 'Consistencia'),
