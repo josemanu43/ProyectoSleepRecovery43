@@ -1,11 +1,11 @@
+# users/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .forms import SleepSessionForm, SleepSessionEditForm
-from .forms import SleepSessionForm
 from .models import SleepSession, SleepQualityOption
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,105 +13,6 @@ import io
 import base64
 
 # Vista para la página principal (dashboard)
-@login_required
-def dashboard(request):
-    sleep_sessions = SleepSession.objects.filter(user=request.user).order_by('-start_time')
-    context = {
-        'sleep_sessions': sleep_sessions
-    }
-    return render(request, 'users/dashboard.html', context)
-
-# Vista para el registro de usuarios
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
-
-# Vista para el inicio de sesión
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('dashboard')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'users/login.html', {'form': form})
-
-# Vista para cerrar la sesión
-def user_logout(request):
-    logout(request)
-    return redirect('login')
-
-# Nueva vista para agregar una sesión de sueño
-@login_required
-def add_sleep_session(request):
-    if request.method == 'POST':
-        form = SleepSessionForm(request.POST)
-        if form.is_valid():
-            sleep_session = SleepSession(
-                user=request.user,
-                start_time=form.cleaned_data['start_time'],
-                end_time=form.cleaned_data['end_time'],
-                quality=form.cleaned_data['quality'],
-                sleep_interruptions=form.cleaned_data['sleep_interruptions']
-            )
-            sleep_session.duration = (sleep_session.end_time - sleep_session.start_time).total_seconds() / 60
-            sleep_session.save()
-            return redirect('dashboard')
-    else:
-        form = SleepSessionForm(initial={'start_time': timezone.now(), 'end_time': timezone.now()})
-    return render(request, 'users/add_sleep_session.html', {'form': form})
-
-@login_required
-def dashboard(request):
-    # Obtiene todos los registros de sueño del usuario actual
-    sleep_sessions = SleepSession.objects.filter(user=request.user).order_by('-start_time')
-
-    # Convertir los datos a un DataFrame de Pandas para análisis
-    sessions_data = list(sleep_sessions.values('start_time', 'end_time', 'duration', 'quality'))
-    
-    # Solo analiza si hay sesiones registradas
-    if sessions_data:
-        df = pd.DataFrame(sessions_data)
-        
-        # Calcular la duración promedio del sueño
-        average_duration = df['duration'].mean()
-
-        # Calcular la calidad de sueño más frecuente (moda)
-        most_frequent_quality_id = df['quality'].mode().iloc[0]
-        most_frequent_quality = SleepQualityOption.objects.get(id=most_frequent_quality_id).quality_label
-        
-        # Calcular el número total de sesiones de sueño
-        total_sessions = len(df)
-        
-        # Puedes agregar más análisis aquí, como la consistencia del sueño
-
-    else:
-        # Si no hay sesiones, las estadísticas son nulas
-        average_duration = 0
-        most_frequent_quality = "No hay datos"
-        total_sessions = 0
-    
-    context = {
-        'sleep_sessions': sleep_sessions,
-        'average_duration': average_duration,
-        'most_frequent_quality': most_frequent_quality,
-        'total_sessions': total_sessions
-    }
-    
-    return render(request, 'users/dashboard.html', context)
-
 @login_required
 def dashboard(request):
     sleep_sessions = SleepSession.objects.filter(user=request.user).order_by('start_time')
@@ -159,31 +60,73 @@ def dashboard(request):
     
     return render(request, 'users/dashboard.html', context)
 
-# users/views.py
+# Vista para el registro de usuarios
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
 
-from django.shortcuts import render, redirect, get_object_or_404
-# ... (otras importaciones)
-from .forms import SleepSessionForm, SleepSessionEditForm # <-- ¡Importa el nuevo formulario!
-from .models import SleepSession, SleepQualityOption
+# Vista para el inicio de sesión
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'users/login.html', {'form': form})
 
-# ... (otras vistas)
+# Vista para cerrar la sesión
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
-# ... (demás vistas)
+# Vista para agregar una sesión de sueño
+@login_required
+def add_sleep_session(request):
+    if request.method == 'POST':
+        form = SleepSessionForm(request.POST)
+        if form.is_valid():
+            sleep_session = SleepSession(
+                user=request.user,
+                start_time=form.cleaned_data['start_time'],
+                end_time=form.cleaned_data['end_time'],
+                quality=form.cleaned_data['quality'],
+                sleep_interruptions=form.cleaned_data['sleep_interruptions']
+            )
+            sleep_session.duration = (sleep_session.end_time - sleep_session.start_time).total_seconds() / 60
+            sleep_session.save()
+            return redirect('dashboard')
+    else:
+        form = SleepSessionForm(initial={'start_time': timezone.now(), 'end_time': timezone.now()})
+    return render(request, 'users/add_sleep_session.html', {'form': form})
 
+# Vista para editar una sesión de sueño existente
 @login_required
 def edit_sleep_session(request, session_id):
     sleep_session = get_object_or_404(SleepSession, pk=session_id, user=request.user)
     if request.method == 'POST':
-        form = SleepSessionEditForm(request.POST, instance=sleep_session) # <-- ¡Aquí está la clave!
+        form = SleepSessionEditForm(request.POST, instance=sleep_session) # Cambiado
         if form.is_valid():
             form.save()
             return redirect('dashboard')
     else:
-        form = SleepSessionEditForm(instance=sleep_session) # <-- ¡Y aquí!
+        form = SleepSessionEditForm(instance=sleep_session) # Cambiado
     context = {'form': form}
     return render(request, 'users/edit_sleep_session.html', context)
 
-# ... (la vista de delete_sleep_session)
+# Vista para eliminar una sesión de sueño
 @login_required
 def delete_sleep_session(request, session_id):
     sleep_session = get_object_or_404(SleepSession, pk=session_id, user=request.user)
