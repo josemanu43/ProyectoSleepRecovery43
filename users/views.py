@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .forms import SleepSessionForm, SleepSessionEditForm
 from .models import SleepSession, SleepQualityOption
+from .recommendations.factories import AdviceFactory
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
@@ -22,43 +23,46 @@ def dashboard(request):
     average_duration = 0
     total_sessions = 0
     most_frequent_quality = "No hay datos"
+    advice = []
 
     if sessions_data:
         df = pd.DataFrame(sessions_data)
-        
-        # Generar el gráfico de duración del sueño
+
+        # Generar gráfico duración del sueño
         plt.figure(figsize=(10, 5))
         plt.plot(df['start_time'], df['duration'], marker='o')
         plt.title('Duración del sueño a lo largo del tiempo')
         plt.xlabel('Fecha')
         plt.ylabel('Duración (minutos)')
         plt.grid(True)
-        
-        # Convertir el gráfico a una imagen base64
+
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         buf.seek(0)
         chart_url = base64.b64encode(buf.getvalue()).decode('utf8')
         buf.close()
-        
-        # Calcular estadísticas
+
+        # Estadísticas
         average_duration = df['duration'].mean()
         total_sessions = len(df)
-        
-        # Encontrar la calidad de sueño más frecuente
+
+        # Calidad más frecuente
         most_frequent_quality_series = df['quality__quality_label'].mode()
         if not most_frequent_quality_series.empty:
             most_frequent_quality = most_frequent_quality_series.iloc[0]
+
+        # Aquí puedes agregar tu lógica para generar consejos, si tienes AdviceFactory
 
     context = {
         'sleep_sessions': sleep_sessions,
         'average_duration': average_duration,
         'total_sessions': total_sessions,
         'most_frequent_quality': most_frequent_quality,
-        'chart_url': chart_url
+        'chart_url': chart_url,
+        'advice': advice,
     }
-    
     return render(request, 'users/dashboard.html', context)
+
 
 # Vista para el registro de usuarios
 def register(request):
@@ -134,3 +138,57 @@ def delete_sleep_session(request, session_id):
         sleep_session.delete()
         return redirect('dashboard')
     return render(request, 'users/delete_sleep_session.html', {'sleep_session': sleep_session})
+@login_required
+def dashboard(request):
+    sleep_sessions = SleepSession.objects.filter(user=request.user).order_by('start_time')
+    sessions_data = list(sleep_sessions.values('start_time', 'end_time', 'duration', 'quality__quality_label'))
+
+    chart_url = None
+    average_duration = 0
+    total_sessions = 0
+    most_frequent_quality = "No hay datos"
+    advice = []
+
+    if sessions_data:
+        df = pd.DataFrame(sessions_data)
+
+        # Calcular estadísticas
+        average_duration = df['duration'].mean()
+        total_sessions = len(df)
+        most_frequent_quality_series = df['quality__quality_label'].mode()
+        if not most_frequent_quality_series.empty:
+            most_frequent_quality = most_frequent_quality_series.iloc[0]
+
+        # Generar gráfico
+        plt.figure(figsize=(10, 5))
+        plt.plot(df['start_time'], df['duration'], marker='o')
+        plt.title('Duración del sueño a lo largo del tiempo')
+        plt.xlabel('Fecha')
+        plt.ylabel('Duración (minutos)')
+        plt.grid(True)
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        chart_url = base64.b64encode(buf.getvalue()).decode('utf8')
+        buf.close()
+
+        # Fábrica de Consejos
+        duration_generator = AdviceFactory.get_advice_generator('duration')
+        advice.append(duration_generator.get_advice(average_duration))
+
+        if total_sessions > 1:
+            consistency_generator = AdviceFactory.get_advice_generator('consistency')
+            advice.append(consistency_generator.get_advice(df))
+
+    # ✅ Aquí está todo el contexto correcto
+    context = {
+        'sleep_sessions': sleep_sessions,
+        'average_duration': average_duration,
+        'total_sessions': total_sessions,
+        'most_frequent_quality': most_frequent_quality,
+        'chart_url': chart_url,
+        'advice': advice,
+    }
+
+    return render(request, 'users/dashboard.html', context)

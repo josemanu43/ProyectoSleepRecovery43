@@ -12,19 +12,20 @@ class UserProfile(models.Model):
     def __str__(self):
         return f'Profile for {self.user.username}'
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class SleepQualityOption(models.Model):
-    quality_label = models.CharField(max_length=255, unique=True)
+    quality_label = models.CharField(max_length=50)
 
     def __str__(self):
         return self.quality_label
-
-# users/models.py
 
 class SleepSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    duration = models.IntegerField() # Duration in minutes
+    duration = models.IntegerField()  # Duración en minutos
     quality = models.ForeignKey(SleepQualityOption, on_delete=models.SET_NULL, null=True)
     sleep_interruptions = models.IntegerField(default=0, null=True, blank=True)
     sleep_stage_data = models.JSONField(null=True, blank=True)
@@ -32,6 +33,7 @@ class SleepSession(models.Model):
 
     def __str__(self):
         return f'Sleep session for {self.user.username} on {self.start_time.date()}'
+
 class Recommendation(models.Model):
     RECOMMENDATION_TYPES = [
         ('consistencia', 'Consistencia'),
