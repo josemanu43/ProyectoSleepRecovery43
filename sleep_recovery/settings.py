@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+from decouple import config
+
+WEATHER_API_KEY = config("WEATHER_API_KEY", default="83e4e02b2b714137b76215104252709")
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

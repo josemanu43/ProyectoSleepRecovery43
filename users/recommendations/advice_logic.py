@@ -58,3 +58,73 @@ class ConsistencyAdvice(BaseAdvice):
                 'text': 'Tienes una buena consistencia en tus horarios de sueño. Esto es clave para regular tu ritmo circadiano.',
                 'metric': f'{std_minutes:.0f} min de desviación'
             }
+        
+# advice_logic.py
+
+class DurationAdviceGenerator:
+    def get_advice(self, average_duration):
+        # lógica de duración...
+        return {"category": "Duración", "message": "...", "metric": f"{average_duration} min"}
+
+
+class ConsistencyAdviceGenerator:
+    def get_advice(self, df):
+        # lógica de consistencia...
+        return {"category": "Consistencia", "message": "...", "metric": f"{...} min de desviación"}
+
+
+class TemperatureAdviceGenerator:
+    def get_advice(self, temp_celsius):
+        if temp_celsius is None:
+            return {
+                "category": "Temperatura",
+                "message": "No se pudo obtener la temperatura actual.",
+                "metric": "N/A"
+            }
+
+        if temp_celsius < 18:
+            message = "La temperatura está algo fría. Usa una cobija extra o asegúrate de mantener la habitación cálida."
+        elif 18 <= temp_celsius <= 24:
+            message = "La temperatura es agradable para dormir. Mantén la ventilación adecuada."
+        else:
+            message = "Hace calor. Considera ventilar la habitación o usar ropa ligera para dormir mejor."
+
+        return {
+            "category": "Temperatura",
+            "message": message,
+            "metric": f"{temp_celsius}°C"
+        }
+
+
+class AdviceFactory:
+    generators = {
+        "duration": DurationAdviceGenerator(),
+        "consistency": ConsistencyAdviceGenerator(),
+        "temperature": TemperatureAdviceGenerator(),  # 👈 aquí agregas el tuyo
+    }
+
+    @staticmethod
+    def get_advice_generator(advice_type):
+        return AdviceFactory.generators.get(advice_type)
+
+class TemperatureAdvice:
+    def get_advice(self, temp_celsius):
+        if temp_celsius is None:
+            return {
+                "category": "Temperatura",
+                "message": "No se pudo obtener la temperatura actual.",
+                "metric": "N/A"
+            }
+
+        if temp_celsius < 18:
+            message = "Tu habitación está demasiado fría, intenta subir la calefacción."
+        elif temp_celsius > 24:
+            message = "Tu habitación está demasiado caliente, intenta ventilarla o usar aire acondicionado."
+        else:
+            message = "La temperatura de tu habitación es adecuada para dormir."
+
+        return {
+            "category": "Temperatura",
+            "message": message,
+            "metric": f"{temp_celsius}°C"
+        }

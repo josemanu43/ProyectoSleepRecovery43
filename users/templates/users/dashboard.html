@@ -11,29 +11,50 @@
 
     <hr class="my-4">
 
+    {# --- Métricas principales: sólo si hay sesiones mostramos estas 3 tarjetas --- #}
     {% if sleep_sessions %}
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
+    <div class="row text-center">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-info h-100">
                 <div class="card-header">Duración promedio del sueño</div>
-                <div class="card-body">
+                <div class="card-body d-flex align-items-center justify-content-center">
                     <h5 class="card-title">{{ average_duration|floatformat:0 }} min</h5>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-success h-100">
                 <div class="card-header">Calidad más frecuente</div>
-                <div class="card-body">
+                <div class="card-body d-flex align-items-center justify-content-center">
                     <h5 class="card-title">{{ most_frequent_quality }}</h5>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-warning mb-3">
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-warning h-100">
                 <div class="card-header">Sesiones registradas</div>
-                <div class="card-body">
+                <div class="card-body d-flex align-items-center justify-content-center">
                     <h5 class="card-title">{{ total_sessions }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# --- Clima actual: SIEMPRE mostrar (centrado) --- #}
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Clima actual</div>
+                <div class="card-body text-center">
+                    {% if current_temp %}
+                        <h5 class="card-title">{{ current_temp }}°C</h5>
+                        <p class="card-text">{{ current_condition }}</p>
+                    {% else %}
+                        <h5 class="card-title">No disponible</h5>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -41,6 +62,7 @@
 
     <hr class="my-4">
 
+    {# --- Gráfico (si existe) --- #}
     <h2 class="text-center mt-5">Tu Historial de Sueño</h2>
 
     {% if chart_url %}
@@ -56,18 +78,30 @@
     </div>
     {% endif %}
 
+    {# --- Recomendaciones: mostrar siempre si la variable 'advice' existe y no está vacía --- #}
     {% if advice %}
     <h2 class="text-center mt-5">Recomendaciones para ti</h2>
-    <div class="row mt-4">
+
+    <div class="row mt-4 justify-content-center">
         {% for a in advice %}
-        <div class="col-md-6 mb-4">
-            <div class="card border-primary h-100">
+        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+            <div class="card border-primary w-100">
                 <div class="card-header bg-primary text-white">
-                    <span class="badge bg-light text-dark">{{ a.type }}</span>
+                    <span class="badge bg-light text-dark">
+                        {% if a.category %}{{ a.category }}
+                        {% elif a.type %}{{ a.type }}
+                        {% else %}Recomendación{% endif %}
+                    </span>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ a.text }}</p>
-                    <small class="text-muted">Métrica actual: {{ a.metric }}</small>
+                    <p class="card-text">
+                        {% if a.message %}{{ a.message }}
+                        {% elif a.text %}{{ a.text }}
+                        {% else %}Sin detalle{% endif %}
+                    </p>
+                    <small class="text-muted">
+                        Métrica actual: {% if a.metric %}{{ a.metric }}{% else %}No disponible{% endif %}
+                    </small>
                 </div>
             </div>
         </div>
@@ -77,6 +111,8 @@
 
     <hr class="my-4">
 
+    {# --- Tabla de sesiones: sólo si hay sesiones las mostramos, si no mostramos mensaje --- #}
+    {% if sleep_sessions %}
     <table class="table table-striped table-bordered mt-4">
         <thead class="bg-dark text-white">
             <tr>
@@ -104,7 +140,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     {% else %}
     <p class="text-center mt-5">Aún no has registrado ninguna sesión de sueño. ¡Comienza ahora!</p>
     {% endif %}

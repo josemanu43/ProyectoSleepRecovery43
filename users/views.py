@@ -8,6 +8,9 @@ from django.utils import timezone
 from .forms import SleepSessionForm, SleepSessionEditForm
 from .models import SleepSession, SleepQualityOption
 from .recommendations.factories import AdviceFactory
+from .recommendations.factories import AdviceFactory
+from .api_fetcher import get_weather_info # <-- ¡Nueva Importación!
+from sleep_recovery.weather import get_weather_info
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
@@ -192,3 +195,58 @@ def dashboard(request):
     }
 
     return render(request, 'users/dashboard.html', context)
+
+
+# views.py
+
+@login_required
+def dashboard(request):
+    sleep_sessions = SleepSession.objects.filter(user=request.user).order_by('start_time')
+    sessions_data = list(sleep_sessions.values('start_time', 'end_time', 'duration', 'quality__quality_label'))
+
+    advice = []
+    average_duration = 0
+    total_sessions = 0
+    most_frequent_quality = "No hay datos"
+
+    temp_celsius, condition = None, None
+
+    if sessions_data:
+        df = pd.DataFrame(sessions_data)
+
+        # Estadísticas
+        average_duration = df['duration'].mean()
+        total_sessions = len(df)
+        most_frequent_quality_series = df['quality__quality_label'].mode()
+        if not most_frequent_quality_series.empty:
+            most_frequent_quality = most_frequent_quality_series.iloc[0]
+
+        # Consejos de duración
+        duration_generator = AdviceFactory.get_advice_generator('duration')
+        advice.append(duration_generator.get_advice(average_duration))
+
+        # Consejos de consistencia
+        if total_sessions > 1:
+            consistency_generator = AdviceFactory.get_advice_generator('consistency')
+            advice.append(consistency_generator.get_advice(df))
+
+        # ✅ Consejos de temperatura (aquí va lo que preguntabas)
+        temp_celsius, condition = get_weather_info(city="Medellin")
+        temp_generator = AdviceFactory.get_advice_generator('temperature')
+        advice.append(temp_generator.get_advice(temp_celsius))
+
+    context = {
+        'sleep_sessions': sleep_sessions,
+        'average_duration': average_duration,
+        'total_sessions': total_sessions,
+        'most_frequent_quality': most_frequent_quality,
+        'advice': advice,
+        'current_temp': temp_celsius,
+        'current_condition': condition,
+    }
+
+    return render(request, 'users/dashboard.html', context)
+
+
+
+

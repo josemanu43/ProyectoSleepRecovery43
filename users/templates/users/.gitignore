@@ -5,11 +5,21 @@ venv/
 # Archivos de Django
 *.log
 *.pot
-__pycache__/
 *.pyc
+*.pyo
+*.pyd
+__pycache__/
 db.sqlite3
 media/
+staticfiles/   # 👈 si usas collectstatic, esta carpeta no se sube
 
-# Archivos de sistema
+# Configuración / IDE
 .DS_Store
 .vscode/
+.idea/
+
+# Archivos de test / cobertura
+.coverage
+*.cover
+*.py,cover
+htmlcov/
