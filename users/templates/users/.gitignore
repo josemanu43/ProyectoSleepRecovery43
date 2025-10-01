@@ -1,25 +1,20 @@
-# Archivos del entorno virtual
+# Entorno virtual
 venv/
-.env
 
-# Archivos de Django
-*.log
-*.pot
+# Archivos compilados
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
-__pycache__/
-db.sqlite3
-media/
-staticfiles/   # 👈 si usas collectstatic, esta carpeta no se sube
 
-# Configuración / IDE
-.DS_Store
+# Base de datos local (opcional)
+db.sqlite3
+
+# Archivos de configuración de IDE
 .vscode/
 .idea/
 
-# Archivos de test / cobertura
-.coverage
-*.cover
-*.py,cover
-htmlcov/
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
