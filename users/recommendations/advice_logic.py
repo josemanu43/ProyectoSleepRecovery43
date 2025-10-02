@@ -100,7 +100,7 @@ class AdviceFactory:
     generators = {
         "duration": DurationAdviceGenerator(),
         "consistency": ConsistencyAdviceGenerator(),
-        "temperature": TemperatureAdviceGenerator(),  # 👈 aquí agregas el tuyo
+        "temperature": TemperatureAdviceGenerator(), 
     }
 
     @staticmethod

@@ -1,0 +1,40 @@
+/* users/static/admin/custom_admin.css */
+
+/*
+   COLORES ELEGIDOS:
+   Azul principal (header, botones): #007bff (Azul primario de Bootstrap)
+   Azul claro/secundario (fondo de enlaces/títulos): #e9f0ff 
+   Texto: Blanco o Gris oscuro
+*/
+
+/* 1. Encabezado principal (Header) y Títulos de Módulos */
+#header {
+    background: #007bff !important; /* Azul Primario */
+    color: #ffffff; /* Texto Blanco para el nombre del sitio */
+}
+
+/* 2. Color de fondo del login y títulos de módulo (ej. Users, Sleep sessions) */
+.module h2, .inline-group h2 {
+    background: #007bff !important; /* Azul Primario */
+    color: #ffffff; /* Texto Blanco */
+    border-bottom: 1px solid #0056b3;
+}
+
+/* 3. Botones de Acción (Guardar, Añadir) */
+.button.default, input[type=submit].default, .submit-row input.default {
+    background: #007bff !important; /* Azul Primario */
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+/* 4. Resaltado de enlaces y acciones seleccionadas (ej. Pestaña activa en edición) */
+.selector-nav li a.selected {
+    background: #d9edf7 !important; /* Azul muy claro para fondo */
+    color: #007bff !important;     /* Texto Azul Primario */
+    border-left: 5px solid #007bff !important;
+}
+
+/* 5. Estilo de los enlaces al pasar el ratón */
+a:hover {
+    color: #0056b3; /* Un azul un poco más oscuro que el primario */
+}
