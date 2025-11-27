@@ -23,3 +23,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')), # ¡Asegúrate de agregar esta línea!
 ]
+
+# sleep_recovery/urls.py
+
+from django.contrib import admin
+from django.urls import path, include 
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('users.urls')),
+    
+    # 🛑 Nuevas URLs para el Login de Google (Allauth)
+    path('accounts/', include('allauth.urls')),
+]

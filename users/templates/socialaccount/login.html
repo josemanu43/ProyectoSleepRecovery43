@@ -1,0 +1,20 @@
+{% extends "users/base.html" %}
+{% load socialaccount %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Iniciando Sesión...</h2>
+    <p>Serás redirigido automáticamente. Si no lo haces, haz clic abajo.</p>
+
+    {% get_providers as socialaccount_providers %}
+    
+    {% for provider in socialaccount_providers %}
+        {% if provider.id == 'google' %}
+            <meta http-equiv="refresh" content="0;url={% provider_login_url provider.id %}" />
+           <a href="{% provider_login_url 'google' %}" class="btn btn-google w-100">
+              </a>
+        {% endif %}
+    {% endfor %}
+
+</div>
+{% endblock %}

@@ -38,3 +38,35 @@
 a:hover {
     color: #0056b3; /* Un azul un poco más oscuro que el primario */
 }
+
+/* users/static/admin/custom_admin.css */
+
+/* Estilo para el botón de Google (usando el color oficial) */
+.btn-google {
+    color: #fff;
+    background-color: #db4437; /* Rojo de Google */
+    border-color: #db4437;
+    font-weight: 600;
+    position: relative;
+    padding-left: 45px; /* Espacio para el icono */
+}
+
+.btn-google:hover {
+    background-color: #c53929; /* Rojo oscuro al pasar el ratón */
+    border-color: #c53929;
+}
+
+/* Estilo del ícono (la G blanca dentro de un círculo azul) */
+.btn-google .fab.fa-google {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 35px;
+    height: 100%;
+    background: #fff; /* Fondo blanco para el icono */
+    color: #db4437; /* Letra roja */
+    line-height: 42px; /* Centrado vertical */
+    border-right: 1px solid #c53929;
+    border-radius: .25rem 0 0 .25rem;
+}

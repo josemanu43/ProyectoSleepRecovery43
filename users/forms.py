@@ -25,8 +25,8 @@ class SleepSessionForm(forms.ModelForm):
         if start and end:
             if end <= start:
                 raise forms.ValidationError("La hora de fin debe ser posterior a la de inicio.")
-            if end > timezone.now():
-                raise forms.ValidationError("No puedes registrar horas futuras de sueño.")
+           # if end > timezone.now():
+           #     raise forms.ValidationError("No puedes registrar horas futuras de sueño.")
 
         return cleaned_data
 
