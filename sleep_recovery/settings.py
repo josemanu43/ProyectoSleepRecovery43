@@ -6,9 +6,9 @@ import os
 from decouple import config
 
 # ----------------------------------------------------
-# 1. CONFIGURACIÓN DE APIs Y CLAVES (Lectura de .env)
+# 1. CONFIGURACIÓN DE APIs Y CLAVES
 # ----------------------------------------------------
-# Nota: Asume que tienes un archivo .env con WEATHER_API_KEY
+# Nota: Para producción, asegúrate de que estas claves estén en un archivo .env
 WEATHER_API_KEY = config("WEATHER_API_KEY", default="83e4e02b2b714137b76215104252709")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,9 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Tus aplicaciones
     'users',
     
-    # Requeridas por allauth
+    # Requeridas por allauth (Login Social)
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -56,6 +58,25 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend', # Requerido por allauth
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', # Login estándar
+    'allauth.account.auth_backends.AuthenticationBackend', # Login social y avanzado
+]
+
+SITE_ID = 1
+
+# Permite login con username O email
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+# Requiere el email en el registro (necesario para login por email)
+ACCOUNT_EMAIL_REQUIRED = True
+# No requiere un username único si se usa email (opcional, depende de tu gusto)
+ACCOUNT_USERNAME_REQUIRED = False
+# Para desarrollo, no verificamos el email (cambiar a 'mandatory' en producción)
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -64,7 +85,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware', # Requerido por allauth
+    'allauth.account.middleware.AccountMiddleware', # Middleware de allauth
 ]
 
 # Configuración de redirecciones
@@ -82,7 +103,6 @@ ROOT_URLCONF = 'sleep_recovery.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Corrección: Uso de pathlib para la ruta de templates
         'DIRS': [BASE_DIR / 'users/templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -115,7 +135,10 @@ DATABASES = {
 }
 
 
-# Password validation
+# ----------------------------------------------------
+# 6. VALIDACIÓN DE CONTRASEÑAS
+# ----------------------------------------------------
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -125,37 +148,37 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # ----------------------------------------------------
-# 6. INTERNACIONALIZACIÓN (I18N)
+# 7. INTERNACIONALIZACIÓN (I18N)
 # ----------------------------------------------------
 
-LANGUAGE_CODE = 'es-co' # Cambiado a español/Colombia
-TIME_ZONE = 'America/Bogota' # Zona horaria más precisa
+LANGUAGE_CODE = 'es-co' 
+TIME_ZONE = 'America/Bogota' 
 USE_I18N = True
 USE_TZ = True
 
 
 # ----------------------------------------------------
-# 7. ARCHIVOS ESTÁTICOS Y ESTILOS
+# 8. ARCHIVOS ESTÁTICOS
 # ----------------------------------------------------
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'users/static', 
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles' # Requerido para collectstatic
+STATIC_ROOT = BASE_DIR / 'staticfiles' 
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # ----------------------------------------------------
-# 8. CONFIGURACIÓN DE SOCIAL ACCOUNT (OAuth)
+# 9. CONFIGURACIÓN SOCIAL ACCOUNT
 # ----------------------------------------------------
 
-# 🛑 IMPORTANTE 🛑
-# Comentamos este bloque para que Django lea las credenciales SOLO desde la DB.
-# Esto SOLUCIONA el error MultipleObjectsReturned.
+# NOTA IMPORTANTE:
+# No definimos SOCIALACCOUNT_PROVIDERS aquí.
+# La configuración de Google (Client ID y Secret) se lee 
+# directamente desde la Base de Datos (Panel de Administración -> Aplicaciones Sociales).
+# Esto previene errores de duplicidad y protege las claves en GitHub.
 
-# SOCIALACCOUNT_PROVIDERS = {
-#    
-# }
+# Imprime los correos en la consola en lugar de enviarlos (SOLO DESARROLLO)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
