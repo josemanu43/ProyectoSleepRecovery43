@@ -1,0 +1,68 @@
+{% extends 'users/base.html' %}
+{% load sleep_filters %}
+
+{% block title %}Historial de Sueño{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Historial Completo</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0 align-middle">
+                    <thead class="bg-light text-primary">
+                        <tr>
+                            <th class="py-3 ps-4">Inicio</th>
+                            <th class="py-3">Fin</th>
+                            <th class="py-3">Duración</th>
+                            <th class="py-3">Calidad</th>
+                            <th class="py-3 text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sleep_sessions %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ session.start_time|date:"d M, H:i" }}</td>
+                            <td>{{ session.end_time|date:"d M, H:i" }}</td>
+                            <td>
+                                <span class="badge bg-info text-dark">
+                                    {{ session.duration|minutes_to_hours }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if session.quality %}
+                                    {{ session.quality.quality_label }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'edit_sleep_session' session.id %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'delete_sleep_session' session.id %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-bed fa-3x mb-3 d-block text-secondary"></i>
+                                No hay sesiones registradas aún.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

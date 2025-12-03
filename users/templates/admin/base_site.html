@@ -1,11 +1,21 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block extrahead %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/custom_admin.css' %}">
+{# Personalizamos el Título de la pestaña #}
+{% block title %}Admin | Sleep Recovery{% endblock %}
+
+{# Personalizamos el Título del Header #}
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'admin/img/icon-clock.svg' %}" alt="" style="height: 24px; margin-right: 10px; vertical-align: text-bottom;">
+        Administración Sleep Recovery
+    </a>
+</h1>
 {% endblock %}
 
-{% block content %}
+{# Aquí inyectamos nuestro CSS personalizado #}
+{% block extrastyle %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/custom_admin.css' %}">
 {% endblock %}

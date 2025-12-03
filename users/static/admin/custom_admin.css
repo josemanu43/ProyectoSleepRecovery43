@@ -1,72 +1,177 @@
 /* users/static/admin/custom_admin.css */
 
-/*
-   COLORES ELEGIDOS:
-   Azul principal (header, botones): #007bff (Azul primario de Bootstrap)
-   Azul claro/secundario (fondo de enlaces/títulos): #e9f0ff 
-   Texto: Blanco o Gris oscuro
+/* =========================================
+   VARIABLES DE MARCA (Sleep Recovery)
+   ========================================= */
+:root {
+    --primary-color: #0d6efd;       /* Azul Bootstrap */
+    --secondary-color: #0a58ca;     /* Azul oscuro hover */
+    --success-color: #198754;       /* Verde */
+    --bg-color: #f4f8fb;            /* Fondo gris-azulado suave */
+    --card-bg: #ffffff;             /* Fondo de tarjetas */
+    --text-color: #333333;
+    --border-radius: 12px;          /* Curvatura de bordes */
+    --shadow: 0 5px 15px rgba(0,0,0,0.05); /* Sombra suave */
+}
+
+/* 1. FONDO GENERAL */
+body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Para asegurar que el fondo cubra todo */
+#container {
+    background: transparent !important;
+}
+
+/* 2. ENCABEZADO (HEADER) */
+#header {
+    background: var(--primary-color) !important;
+    color: #fff;
+    padding: 15px 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#header a:link, #header a:visited {
+    color: #fff;
+}
+
+#branding h1 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* 3. MÓDULOS PRINCIPALES (LAS "CAJAS") */
+/* Esta es la parte que querías cambiar: bordes redondeados y sombras */
+.module {
+    background-color: var(--card-bg) !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--shadow) !important;
+    border: none !important;
+    margin-bottom: 30px !important;
+    overflow: hidden; /* Importante para que el encabezado respete el borde redondeado */
+}
+
+/* Encabezados de las cajas (Donde dice "Autenticación", "Cuentas", etc.) */
+.module caption, .module h2 {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none !important;
+}
+
+/* 4. TABLAS DENTRO DE LOS MÓDULOS */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Filas */
+td, th {
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    font-size: 14px;
+    vertical-align: middle !important;
+}
+
+/* Enlaces dentro de la tabla (Modelos) */
+.module table a:link, .module table a:visited {
+    color: #333;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+/* Hover en las filas */
+tr:hover {
+    background-color: #eef6ff !important; /* Azul muy clarito al pasar el mouse */
+}
+
+/* 5. BOTONES DE AÑADIR Y MODIFICAR */
+/* Los convertimos en botones reales con bordes redondeados */
+/* =========================================
+   5. BOTONES DE AÑADIR Y MODIFICAR (UNIFICADOS)
+   ========================================= */
+
+/* Cubrimos todas las posibles clases que Django usa para estos botones:
+   - .object-tools a: Botones en la esquina superior derecha
+   - .model-group .addlink: Botón "Añadir" en la lista
+   - .model-group .changelink: Botón "Modificar" en la lista
+   - .addlink: Clase genérica para añadir
+   - .changelink: Clase genérica para modificar
+   - td a.addlink, td a.changelink: Enlaces específicos dentro de celdas
 */
 
-/* 1. Encabezado principal (Header) y Títulos de Módulos */
-#header {
-    background: #007bff !important; /* Azul Primario */
-    color: #ffffff; /* Texto Blanco para el nombre del sitio */
+.object-tools a,
+.module td a.addlink,
+.module td a.changelink,
+.model-group .addlink,
+.model-group .changelink {
+    display: inline-block; /* Asegura que se comporten como cajas */
+    background-color: transparent !important;
+    color: var(--primary-color) !important;
+    font-weight: 700; /* Negrita */
+    border: 2px solid var(--primary-color); /* Borde un poco más grueso */
+    border-radius: 30px; /* Bordes muy redondeados (Píldora) */
+    padding: 6px 15px !important;
+    text-transform: uppercase;
+    font-size: 11px;
+    line-height: 1;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap; /* Evita que el texto se rompa */
+    
+    /* Quitar iconos por defecto si molestan la alineación */
+    background-image: none !important; 
+    padding-left: 15px !important; 
 }
 
-/* 2. Color de fondo del login y títulos de módulo (ej. Users, Sleep sessions) */
-.module h2, .inline-group h2 {
-    background: #007bff !important; /* Azul Primario */
-    color: #ffffff; /* Texto Blanco */
-    border-bottom: 1px solid #0056b3;
+/* Efecto Hover (Al pasar el mouse) */
+.object-tools a:hover,
+.module td a.addlink:hover,
+.module td a.changelink:hover,
+.model-group .addlink:hover,
+.model-group .changelink:hover {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px); /* Pequeño efecto de elevación */
+    box-shadow: 0 2px 5px rgba(13, 110, 253, 0.3);
 }
 
-/* 3. Botones de Acción (Guardar, Añadir) */
-.button.default, input[type=submit].default, .submit-row input.default {
-    background: #007bff !important; /* Azul Primario */
-    border-color: #007bff !important;
+/* 6. BARRA LATERAL (ACCIONES RECIENTES) */
+#content-related {
+    background: transparent !important;
+}
+
+#content-related .module {
+    background: #fff !important;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+#content-related h2 {
+    background: var(--secondary-color) !important; /* Un azul un poco diferente para distinguir */
     color: white !important;
+    padding: 12px 20px;
+    font-size: 14px;
 }
 
-/* 4. Resaltado de enlaces y acciones seleccionadas (ej. Pestaña activa en edición) */
-.selector-nav li a.selected {
-    background: #d9edf7 !important; /* Azul muy claro para fondo */
-    color: #007bff !important;     /* Texto Azul Primario */
-    border-left: 5px solid #007bff !important;
+#content-related .action-list li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
 }
 
-/* 5. Estilo de los enlaces al pasar el ratón */
-a:hover {
-    color: #0056b3; /* Un azul un poco más oscuro que el primario */
-}
-
-/* users/static/admin/custom_admin.css */
-
-/* Estilo para el botón de Google (usando el color oficial) */
-.btn-google {
-    color: #fff;
-    background-color: #db4437; /* Rojo de Google */
-    border-color: #db4437;
-    font-weight: 600;
-    position: relative;
-    padding-left: 45px; /* Espacio para el icono */
-}
-
-.btn-google:hover {
-    background-color: #c53929; /* Rojo oscuro al pasar el ratón */
-    border-color: #c53929;
-}
-
-/* Estilo del ícono (la G blanca dentro de un círculo azul) */
-.btn-google .fab.fa-google {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 35px;
-    height: 100%;
-    background: #fff; /* Fondo blanco para el icono */
-    color: #db4437; /* Letra roja */
-    line-height: 42px; /* Centrado vertical */
-    border-right: 1px solid #c53929;
-    border-radius: .25rem 0 0 .25rem;
+/* 7. BARRA DE NAVEGACIÓN (Breadcrumbs) */
+div.breadcrumbs {
+    background: #fff;
+    padding: 15px 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
 }

@@ -5,10 +5,10 @@ from django.conf import settings  # Importación de la configuración
 import json # Necesario si la data no se carga bien
 
 def get_weather_info(city="Medellin"):
-    # 🛑 CAMBIO CLAVE: Usamos django.conf.settings
+    #CAMBIO CLAVE: Usamos django.conf.settings
     api_key = settings.WEATHER_API_KEY
     
-    # 🛑 Verificación de clave
+    #Verificación de clave
     if not api_key:
         print("ERROR: WEATHER_API_KEY no está definida en settings.py")
         return 24, "Clima no disponible (Usando valor de prueba)" # Valor seguro de fallback

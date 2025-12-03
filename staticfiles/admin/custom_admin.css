@@ -1,40 +1,109 @@
 /* users/static/admin/custom_admin.css */
 
-/*
-   COLORES ELEGIDOS:
-   Azul principal (header, botones): #007bff (Azul primario de Bootstrap)
-   Azul claro/secundario (fondo de enlaces/títulos): #e9f0ff 
-   Texto: Blanco o Gris oscuro
-*/
+/* =========================================
+   VARIABLES DE MARCA (Sleep Recovery)
+   ========================================= */
+:root {
+    --primary-color: #0d6efd;       /* Azul Bootstrap (Tu color principal) */
+    --secondary-color: #0a58ca;     /* Azul más oscuro para hover */
+    --accent-color: #ffc107;        /* Amarillo para detalles */
+    --header-text: #ffffff;
+    --module-bg: #ffffff;
+    --bg-color: #f4f8fb;            /* Fondo general azulado muy suave */
+    --link-color: #0d6efd;
+}
 
-/* 1. Encabezado principal (Header) y Títulos de Módulos */
+/* Fondo general de la página */
+body {
+    background-color: var(--bg-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* 1. ENCABEZADO PRINCIPAL (Donde dice "Django administration") */
 #header {
-    background: #007bff !important; /* Azul Primario */
-    color: #ffffff; /* Texto Blanco para el nombre del sitio */
+    background: var(--primary-color) !important;
+    color: var(--header-text) !important;
+    padding: 15px 40px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* 2. Color de fondo del login y títulos de módulo (ej. Users, Sleep sessions) */
-.module h2, .inline-group h2 {
-    background: #007bff !important; /* Azul Primario */
-    color: #ffffff; /* Texto Blanco */
-    border-bottom: 1px solid #0056b3;
+#header a:link, #header a:visited {
+    color: var(--header-text) !important;
+    font-weight: bold;
 }
 
-/* 3. Botones de Acción (Guardar, Añadir) */
-.button.default, input[type=submit].default, .submit-row input.default {
-    background: #007bff !important; /* Azul Primario */
-    border-color: #007bff !important;
-    color: white !important;
+#branding h1 {
+    font-size: 24px;
+    margin: 0;
 }
 
-/* 4. Resaltado de enlaces y acciones seleccionadas (ej. Pestaña activa en edición) */
-.selector-nav li a.selected {
-    background: #d9edf7 !important; /* Azul muy claro para fondo */
-    color: #007bff !important;     /* Texto Azul Primario */
-    border-left: 5px solid #007bff !important;
+/* 2. TÍTULOS DE LOS MÓDULOS (Las cajas azules) */
+.module caption, .module h2 {
+    background: var(--secondary-color) !important;
+    color: #fff !important;
+    padding: 12px 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px 4px 0 0;
 }
 
-/* 5. Estilo de los enlaces al pasar el ratón */
+/* 3. BOTONES (Guardar, Añadir, Historial) */
+.button, input[type=submit], .submit-row input.default {
+    background: var(--primary-color) !important;
+    border: none !important;
+    border-radius: 5px !important;
+    padding: 10px 20px !important;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.button:hover, input[type=submit]:hover, .submit-row input.default:hover {
+    background: var(--secondary-color) !important;
+    transform: translateY(-1px);
+}
+
+.button.default {
+    background: #198754 !important; /* Verde para acción principal */
+}
+
+/* 4. ENLACES Y TABLAS */
+div.breadcrumbs {
+    background: #fff;
+    padding: 15px 40px;
+    border-bottom: 1px solid #ddd;
+    color: #666;
+}
+
+div.breadcrumbs a {
+    color: var(--primary-color) !important;
+}
+
+a:link, a:visited {
+    color: var(--link-color);
+}
+
 a:hover {
-    color: #0056b3; /* Un azul un poco más oscuro que el primario */
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Filas de la tabla al pasar el mouse */
+tr.row1:hover, tr.row2:hover {
+    background-color: #e2e6ea !important;
+}
+
+/* 5. CAJAS DE TEXTO (INPUTS) */
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], textarea, select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }

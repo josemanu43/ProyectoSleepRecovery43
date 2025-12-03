@@ -1,24 +1,72 @@
 {% extends 'users/base.html' %}
 
+{% load form_tags %}
+
+{% block title %}Editar Sesión{% endblock %}
+
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header text-center bg-warning text-white">
-                    <h2>Editar Sesión de Sueño</h2>
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+               
+                <div class="card-header text-center bg-warning text-white py-3">
+                    <h2><i class="fas fa-edit me-2"></i> Editar Sesión de Sueño</h2>
                 </div>
-                <div class="card-body">
+               
+                <div class="card-body p-4">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
                     <form method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-warning">Guardar cambios</button>
+
+
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+                           
+                            {{ field.errors }}
+                            {{ field|add_class:"form-control" }}
+                           
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                           
+                            {% if field.field.widget.input_type == 'select' %}
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const selectElement = document.getElementById('{{ field.id_for_label }}');
+                                        if (selectElement) {
+                                            selectElement.classList.add('form-select');
+                                            selectElement.classList.remove('form-control');
+                                        }
+                                    });
+                                </script>
+                            {% endif %}
+
+
+                        </div>
+                        {% endfor %}
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">
+                                <i class="fas fa-save me-2"></i> Guardar cambios
+                            </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center">
-                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancelar</a>
+               
+                <div class="card-footer text-center bg-light border-top-0">
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </a>
                 </div>
             </div>
         </div>

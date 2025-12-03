@@ -1,35 +1,99 @@
 {% extends 'users/base.html' %}
-{% load socialaccount %}  // Línea 3: Carga las etiquetas de allauth
+{% load socialaccount %} {# Carga la librería para el botón de Google #}
+
+{% block title %}Crear Cuenta | Sleep Recovery{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h2>Registro de Usuario</h2>
-                </div>
-                <div class="card-body">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-5">
                     
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
-                    </form>
-                    
-                    <hr class="my-3">
-                    <p class="text-center">O</p>
-                    
-                    <div class="d-grid gap-2">
-                        <a href="{% provider_login_url 'google' %}" 
-                           class="btn btn-danger btn-block" 
-                           style="background-color: #db4437; border-color: #db4437;">
-                           <i class="fab fa-google"></i> Continuar con Google
-                        </a>
+                    <h2 class="text-center mb-4 fw-bold text-primary">Crear Cuenta</h2>
+
+                    <div class="d-grid mb-4">
+                        <form action="{% provider_login_url 'google' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-lg w-100 d-flex align-items-center justify-content-center" style="background-color: #db4437; border-color: #db4437;">
+                                <i class="fab fa-google me-2"></i> Registrarse con Google
+                            </button>
+                        </form>
                     </div>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <hr class="flex-grow-1 my-0 text-muted">
+                        <span class="mx-3 text-muted small fw-bold">O usa tu correo</span>
+                        <hr class="flex-grow-1 my-0 text-muted">
+                    </div>
+
+                    <form method="post" id="registerForm">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ field.label }}
+                                </label>
+                                
+                                <div class="input-group">
+                                    {{ field }} 
+                                </div>
+
+                                {% if field.help_text %}
+                                    <div class="form-text small text-muted" style="font-size: 0.75rem;">
+                                        {{ field.help_text }}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        <i class="fas fa-exclamation-circle me-1"></i> {{ field.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" value="" id="ageCheck" required>
+                            <label class="form-check-label small text-muted" for="ageCheck">
+                                Confirmo que tengo <strong>18 años o más</strong> y acepto los 
+                                <a href="{% url 'terms' %}" target="_blank" class="text-primary text-decoration-none fw-bold">
+                                    términos y condiciones
+                                </a>.
+                            </label>
+                            <div class="invalid-feedback">
+                                Debes aceptar los términos y ser mayor de edad.
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                                Completar Registro
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <span class="text-muted small">¿Ya tienes una cuenta?</span>
+                        <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none ms-1">Inicia Sesión</a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var formFields = document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea');
+        formFields.forEach(function(field) {
+            field.classList.add('form-control');
+            field.classList.add('bg-light');
+            field.classList.add('border-0');
+            field.style.padding = "0.8rem";
+        });
+    });
+</script>
 {% endblock %}

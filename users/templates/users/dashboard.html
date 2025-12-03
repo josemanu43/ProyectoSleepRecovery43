@@ -1,148 +1,153 @@
 {% extends 'users/base.html' %}
+{% load sleep_filters %}
+
+{% block title %}Mi Panel | Sleep Recovery{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="jumbotron text-center">
+   
+    <div class="jumbotron text-center mb-5 p-4 rounded bg-light shadow-sm">
         <h1 class="display-4">¡Bienvenido a Sleep Recovery, {{ user.username }}!</h1>
-        <p class="lead">Esta es tu página principal. Aquí podrás ver y analizar tus patrones de sueño.</p>
-        <a class="btn btn-primary btn-lg" href="{% url 'add_sleep_session' %}" role="button">Registrar nueva sesión de sueño</a>
-        <a class="btn btn-danger btn-lg" href="{% url 'logout' %}" role="button">Cerrar Sesión</a>
+        <p class="lead">Esta es tu página principal. Analiza tus patrones de sueño y ve tu progreso.</p>
     </div>
 
-    <hr class="my-4">
-
-    {# --- Métricas principales: sólo si hay sesiones mostramos estas 3 tarjetas --- #}
-    {% if sleep_sessions %}
-    <div class="row text-center">
-        <div class="col-md-4 mb-3">
-            <div class="card text-white bg-info h-100">
-                <div class="card-header">Duración promedio del sueño</div>
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <h5 class="card-title">{{ average_duration|floatformat:0 }} min</h5>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card text-white bg-success h-100">
-                <div class="card-header">Calidad más frecuente</div>
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <h5 class="card-title">{{ most_frequent_quality }}</h5>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card text-white bg-warning h-100">
-                <div class="card-header">Sesiones registradas</div>
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <h5 class="card-title">{{ total_sessions }}</h5>
+    {% if current_temp %}
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="alert alert-light border shadow-sm">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-start">
+                        <h4 class="mb-1">Clima actual en Medellín:</h4>
+                        <p class="mb-0 fs-5 text-primary">
+                            <i class="fas fa-thermometer-half me-2"></i> {{ current_temp|floatformat:0 }}°C | {{ current_condition }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <i class="fas fa-cloud-sun fa-3x text-warning"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     {% endif %}
 
-    {# --- Clima actual: SIEMPRE mostrar (centrado) --- #}
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Clima actual</div>
-                <div class="card-body text-center">
-                    {% if current_temp %}
-                        <h5 class="card-title">{{ current_temp }}°C</h5>
-                        <p class="card-text">{{ current_condition }}</p>
-                    {% else %}
-                        <h5 class="card-title">No disponible</h5>
-                    {% endif %}
+    {% if sleep_sessions %}
+    <h2 class="text-center mb-4">Tu Resumen de Sueño</h2>
+    <div class="row text-center mb-5">
+        
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow {% if average_duration >= target_duration_minutes %}text-white bg-success{% else %}text-white bg-info{% endif %}">
+                
+                <div class="card-header fw-bold"><i class="fas fa-clock me-2"></i> Duración promedio</div>
+                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 class="card-title display-4">{{ average_duration|minutes_to_hours }}</h5>
+                    
+                    <p class="mb-0 mt-2 fs-6">
+                        {% if average_duration >= target_duration_minutes %}
+                            <span class="badge bg-light text-success">¡Meta cumplida!</span>
+                        {% else %}
+                            <span class="badge bg-light text-secondary">Meta: 480 min</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-primary h-100 shadow">
+                <div class="card-header fw-bold"><i class="fas fa-star-half-alt me-2"></i> Calidad Promedio</div>
+                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 class="card-title display-4">{{ most_frequent_quality }}</h5>
+                    <p class="mb-0 mt-2 fs-6">Moda de calidad registrada</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-warning h-100 shadow">
+                <div class="card-header fw-bold"><i class="fas fa-calendar-alt me-2"></i> Registros (7 días)</div>
+                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 class="card-title display-4">{{ sessions_last_7_days }} <small class="fs-4">/ 7</small></h5>
+                    <p class="mb-0 mt-2 fs-6">Sesiones esta semana</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <hr class="my-4">
-
-    {# --- Gráfico (si existe) --- #}
-    <h2 class="text-center mt-5">Tu Historial de Sueño</h2>
 
     {% if chart_url %}
-    <div class="row mt-4 mb-5 justify-content-center">
+    <div class="row justify-content-center mb-5">
         <div class="col-md-10">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title text-center">Gráfico de Duración del Sueño</h4>
-                    <img src="data:image/png;base64,{{ chart_url }}" class="img-fluid" alt="Gráfico de duración del sueño">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-white text-center py-3">
+                    <h4 class="text-primary fw-bold mb-0"><i class="fas fa-chart-area me-2"></i> Tendencia de Duración</h4>
+                </div>
+                <div class="card-body text-center p-4">
+                    <img src="data:image/png;base64,{{ chart_url }}" alt="Gráfico de Sueño" class="img-fluid rounded border">
                 </div>
             </div>
         </div>
     </div>
     {% endif %}
 
-    {# --- Recomendaciones: mostrar siempre si la variable 'advice' existe y no está vacía --- #}
     {% if advice %}
-    <h2 class="text-center mt-5">Recomendaciones para ti</h2>
-
-    <div class="row mt-4 justify-content-center">
-        {% for a in advice %}
-        <div class="col-md-4 mb-4 d-flex align-items-stretch">
-            <div class="card border-primary w-100">
-                <div class="card-header bg-primary text-white">
-                    <span class="badge bg-light text-dark">
-                        {% if a.category %}{{ a.category }}
-                        {% elif a.type %}{{ a.type }}
-                        {% else %}Recomendación{% endif %}
-                    </span>
-                </div>
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4 fw-bold text-success">
+                <i class="fas fa-lightbulb text-warning me-2"></i> Recomendaciones Inteligentes
+            </h3>
+        </div>
+        {% for item in advice %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #ffc107 !important;">
                 <div class="card-body">
-                    <p class="card-text">
-                        {% if a.message %}{{ a.message }}
-                        {% elif a.text %}{{ a.text }}
-                        {% else %}Sin detalle{% endif %}
+                    <h5 class="card-title text-dark fw-bold">
+                        {% if item.type == 'Duración' %}
+                            <i class="fas fa-hourglass-half text-info me-2"></i>
+                        {% elif item.type == 'Consistencia' %}
+                            <i class="fas fa-calendar-check text-warning me-2"></i>
+                        {% elif item.type == 'Temperatura' %}
+                            <i class="fas fa-thermometer-three-quarters text-danger me-2"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                        {% endif %}
+                        {{ item.type }}
+                    </h5>
+                    
+                    <p class="card-text text-muted mt-3">
+                        {{ item.text }}
                     </p>
-                    <small class="text-muted">
-                        Métrica actual: {% if a.metric %}{{ a.metric }}{% else %}No disponible{% endif %}
-                    </small>
+                    
+                    <div class="mt-auto pt-3 border-top">
+                        <small class="text-muted fw-bold">Dato analizado: {{ item.metric }}</small>
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% endif %}
+    
+    <div class="text-center mb-5">
+        <a class="btn btn-primary btn-lg me-3" href="{% url 'add_sleep_session' %}">
+            <i class="fas fa-plus me-2"></i> Registrar Nueva Sesión
+        </a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'sleep_history' %}">
+            <i class="fas fa-list-alt me-2"></i> Ver Historial Completo
+        </a>
+    </div>
 
-    <hr class="my-4">
-
-    {# --- Tabla de sesiones: sólo si hay sesiones las mostramos, si no mostramos mensaje --- #}
-    {% if sleep_sessions %}
-    <table class="table table-striped table-bordered mt-4">
-        <thead class="bg-dark text-white">
-            <tr>
-                <th scope="col">Hora de inicio</th>
-                <th scope="col">Hora de fin</th>
-                <th scope="col">Duración (min)</th>
-                <th scope="col">Calidad</th>
-                <th scope="col">Interrupciones</th>
-                <th scope="col">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for session in sleep_sessions %}
-            <tr>
-                <td>{{ session.start_time }}</td>
-                <td>{{ session.end_time }}</td>
-                <td>{{ session.duration|floatformat:0 }}</td>
-                <td>{{ session.quality.quality_label }}</td>
-                <td>{{ session.sleep_interruptions }}</td>
-                <td>
-                    <a href="{% url 'edit_sleep_session' session.id %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{% url 'delete_sleep_session' session.id %}" class="btn btn-danger btn-sm">Eliminar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
     {% else %}
-    <p class="text-center mt-5">Aún no has registrado ninguna sesión de sueño. ¡Comienza ahora!</p>
+    <div class="text-center mt-5 py-5">
+        <i class="fas fa-bed fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">Aún no has registrado ninguna sesión de sueño.</h3>
+        <p class="lead mb-4">¡Comienza ahora para recibir tus recomendaciones personalizadas!</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'add_sleep_session' %}">
+            <i class="fas fa-plus me-2"></i> Registrar mi primera Sesión
+        </a>
+    </div>
     {% endif %}
+    
+    <hr class="my-5">
 
 </div>
 {% endblock %}
